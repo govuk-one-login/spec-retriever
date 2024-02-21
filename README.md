@@ -45,6 +45,8 @@ You can:
 
 - get human-readable API specifications
   - See the [openapi-specs repository](https://github.com/govuk-one-login/openapi-specs?tab=readme-ov-file#specifications)
+- summarise the APIs into a spreadsheet
+  - See the [openapi-summariser repository](https://github.com/govuk-one-login/openapi-summariser)
 - create live mocks of these endpoints for use in your development/testing activities
   - Example #1: An example of this used for third party steps by the CRI teams [can be found here](https://github.com/alphagov/di-ipv-third-party-stubs) in the di-ipv-third-party-stubs repo.
   - Example #2: An example of this in the di-openapi-specs repo [can be found here](https://github.com/alphagov/di-openapi-specs/tree/main#mocks).
