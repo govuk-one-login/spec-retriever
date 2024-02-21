@@ -1,0 +1,7 @@
+node_modules/
+dist/
+specs/
+.idea/
+*.iml
+.env
+.tool-versions
