@@ -16,21 +16,42 @@ type SpecMetadata = {
     downloadUrl: string
 };
 
-const {GITHUB_API_KEY, SEARCH_QUERY, DEST_DIR} = process.env;
+const {
+    GITHUB_API_KEY,
+    SEARCH_QUERY,
+    DEST_DIR,
+    IGNORE_FILES,
+    IGNORE_REPOS,
+} = process.env;
 
 const connection = new Octokit({
     auth: GITHUB_API_KEY,
     request: fetch,
 });
 
+function filterResults(results: any[]): any[] {
+    let filtered: any[] = results;
+    if (IGNORE_REPOS && IGNORE_REPOS.length > 0) {
+        const ignorePattern = new RegExp(IGNORE_REPOS);
+        filtered = filtered.filter((r) => !ignorePattern.test(r.repository.name));
+    }
+    if (IGNORE_FILES && IGNORE_FILES.length > 0) {
+        const ignorePattern = new RegExp(IGNORE_FILES);
+        filtered = filtered.filter((r) => !ignorePattern.test(r.name));
+    }
+    return filtered;
+}
+
 async function findSpecs(): Promise<SpecMetadata[]> {
     const results = await connection.paginate(connection.rest.search.code, {
         q: SEARCH_QUERY!!,
     });
+    console.debug(`Found ${results.length} results`);
 
-    console.log(`Found ${results.length} results`);
+    const filtered = filterResults(results);
+    console.log(`Matched ${filtered.length} results`);
 
-    const files: SpecMetadata[] = await asyncMap(results, async (result) => {
+    const files: SpecMetadata[] = await asyncMap(filtered, async (result) => {
         const downloadUrl = await fetchDownloadUrl(result);
         return {
             /**
@@ -44,7 +65,7 @@ async function findSpecs(): Promise<SpecMetadata[]> {
         };
     });
 
-    console.debug(`Results`, files);
+    console.debug('Results', files);
     return files;
 }
 
@@ -82,6 +103,8 @@ async function downloadSpecs(specs: SpecMetadata[], destDir: string) {
             throw new Error(`Error downloading spec ${spec.downloadUrl} to ${destFile}`);
         }
     }
+
+    console.log(`Downloaded ${specs.length} specs to ${destDir}`);
 }
 
 async function downloadFile(spec: SpecMetadata, destFile: string) {
@@ -100,7 +123,7 @@ async function downloadFile(spec: SpecMetadata, destFile: string) {
     }
     await streamPipeline(response.body, fs.createWriteStream(destFile))
 
-    console.info('Downloaded file', destFile);
+    console.debug('Downloaded file', destFile);
 }
 
 (async () => {

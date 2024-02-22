@@ -8,6 +8,14 @@ inputs:
     description: 'The destination directory for the specification files'
     required: false
     default: 'specs'
+  ignore-files:
+    description: 'Ignore files that match the given regular expression'
+    required: false
+    default: ''
+  ignore-repos:
+    description: 'Ignore repositories that match the given regular expression'
+    required: false
+    default: ''
 outputs: {}
 runs:
   using: 'docker'
@@ -15,4 +23,6 @@ runs:
   env:
     SEARCH_QUERY: "${{ inputs.search-query }}"
     DEST_DIR: "${{ inputs.dest-dir }}"
+    IGNORE_FILES: "${{ inputs.ignore-files }}"
+    IGNORE_REPOS: "${{ inputs.ignore-repos }}"
   args: []
