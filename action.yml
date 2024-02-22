@@ -14,5 +14,5 @@ runs:
   image: 'Dockerfile'
   env:
     SEARCH_QUERY: "${{ inputs.search-query }}"
-    DEST_DIR: "/github/workspace/${{ inputs.dest-dir }}"
+    DEST_DIR: "${{ inputs.dest-dir }}"
   args: []
