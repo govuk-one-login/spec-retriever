@@ -1,0 +1,18 @@
+name: 'API specification retriever'
+description: 'Fetch API specifications from GitHub'
+inputs:
+  search-query:
+    description: 'The GitHub search query'
+    required: true
+  dest-dir:
+    description: 'The destination directory for the specification files'
+    required: false
+    default: 'specs'
+outputs: {}
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    SEARCH_QUERY: "${{ inputs.search-query }}"
+    DEST_DIR: "/github/workspace/${{ inputs.dest-dir }}"
+  args: []
