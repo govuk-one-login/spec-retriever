@@ -50,3 +50,67 @@ You can:
 - create live mocks of these endpoints for use in your development/testing activities
   - Example #1: An example of this used for third party steps by the CRI teams [can be found here](https://github.com/alphagov/di-ipv-third-party-stubs) in the di-ipv-third-party-stubs repo.
   - Example #2: An example of this in the di-openapi-specs repo [can be found here](https://github.com/alphagov/di-openapi-specs/tree/main#mocks).
+
+## Using this tool
+
+### Retrieving specs as a GitHub Action
+
+This tool can be consumed as a GitHub Action, in your own GitHub Actions workflows.
+
+For example:
+
+```yaml
+steps:
+  - name: Fetch API specifications
+    uses: govuk-one-login/spec-retriever@a33eae543963c59d470947797e8cf1e59f3c6562
+    env:
+      GITHUB_API_KEY: "${{ secrets.GH_API_KEY }}"
+    with:
+      search-query: "org:some-github-org language:OASv3-yaml"
+      dest-dir: "specs"
+      ignore-repos: "architecture"
+      ignore-files: ".*template.yaml"
+```
+
+#### Token permissions
+
+The tool requires minimal, read-only permissions for the org it is querying.
+
+* Metadata: Read-only
+* Contents: Read-only
+
+### Running locally
+
+This tool can be run locally using Docker or Node.js.
+
+#### Running with Node.js
+
+Build the tool:
+
+```shell
+npm ci
+npm run build
+```
+
+Run the tool:
+
+```shell
+node ./dist/index.js
+```
+
+#### Running with Docker
+
+Build the container:
+
+```shell
+docker build --tag govuk-one-login/spec-retriever .
+```
+
+Run the tool:
+
+```shell
+docker run --rm -it \
+  --env-file .env \
+  -v $PWD/specs:/specs \
+  govuk-one-login/spec-retriever
+```
