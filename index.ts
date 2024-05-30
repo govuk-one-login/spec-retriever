@@ -133,4 +133,5 @@ async function downloadFile(spec: SpecMetadata, destFile: string) {
 
 })().catch((e) => {
     console.error(e);
+    process.exit(1);
 });
